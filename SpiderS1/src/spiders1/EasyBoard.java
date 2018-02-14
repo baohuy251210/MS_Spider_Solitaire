@@ -36,6 +36,12 @@ public class EasyBoard extends Board{
         public boolean anotherPlayIsPossible() {
         }
         
-        
+        public int AnyStackDone(){
+                for (int i = 0; i < BOARD_SIZE; i++){
+                        if ( stack[i].size() == 13 )
+                                return i;
+                }
+                return -1;
+        }
         
 }
