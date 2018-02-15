@@ -29,11 +29,22 @@ public class EasyBoard extends Board{
 
         @Override
         public boolean isLegal(List<Integer> selectedCards) {
-                
+                Integer selectedCard1 = selectedCards.get(0);
+                Integer selectedCard2 = selectedCards.get(1);
+                return cardAt(selectedCard1).IsLegalBelow(cardAt(selectedCard2));
         }
 
         @Override
         public boolean anotherPlayIsPossible() {
+                for (int i = 0; i < BOARD_SIZE; i++){
+                        Card lasti = stack[i].lastCard();
+                        for (int j = 0; j < BOARD_SIZE; j++){
+                                Card lastj = stack[j].lastCard();
+                                if (lastj.IsLegalBelow(lasti))
+                                        return true;
+                        }
+                }
+                return false;
         }
         
         public int AnyStackDone(){

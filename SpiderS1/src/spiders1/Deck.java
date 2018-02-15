@@ -26,6 +26,10 @@ public class Deck {
 	}
 
 
+          public Card lastCard(){
+                return cards.get(size);
+        }
+        
 	public boolean isEmpty() {
 		return size == 0;
 	}
