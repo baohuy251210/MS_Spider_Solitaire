@@ -15,10 +15,16 @@ public abstract class Board {
         private int score, moves;
 
         public Board(int size, String[] ranks, String[] suits, int[] pointValues) {
+                String[] RANKS = new String[104];
+                int[] POINT_VALUES = new int[104];
+                for (int i = 0; i < 104; i++){
+                        RANKS[i] = ranks[i%8];
+                        POINT_VALUES[i] = pointValues[i%8];
+                }
                 score = 500;
                 moves = 0;
                 cards = new Card[size];
-                deck = new Deck(ranks, suits, pointValues);
+                deck = new Deck(RANKS, suits, POINT_VALUES);
                 dealMyCards();
         }
         
@@ -36,6 +42,13 @@ public abstract class Board {
         }
         public int moves(){
                 return moves;
+        }
+        
+        public void setScore(int number){
+                score = number;
+        }
+        public void setMoves(int number){
+                moves = number;
         }
         
         public boolean isEmpty(){
@@ -99,5 +112,6 @@ public abstract class Board {
         
         public abstract boolean isLegal(List<Integer> selectedCards);
         public abstract boolean anotherPlayIsPossible();
+        public abstract int AnyStackDone();
         
 }

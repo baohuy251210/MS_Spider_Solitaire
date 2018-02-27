@@ -8,30 +8,46 @@ import java.util.ArrayList;
  */
 public class EasyBoard extends Board{
 
-        private Deck[] stack = new Deck[10];
+        //each stack[i] is a deck.
+        private Deck[] stack;
         
+        //10 stacks
         private static final int BOARD_SIZE = 10;
         
+        //double boards (104 cards)
         private static final String[] RANKS = 
-        {"ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"};
+        {"ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king",};
         
+        //easy board ==> only spades
         private static final String[] SUITS = 
         {"spades"};
         
+        //
         private static final int[] POINT_VALUES =
         {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
         
+       
+       
         
-        public EasyBoard(int size, String[] ranks, String[] suits, int[] pointValues) {
-                super(size, ranks, suits, pointValues);
+        public EasyBoard() {
+                super(BOARD_SIZE, RANKS, SUITS, POINT_VALUES);
+        }
+        public int getOrder(){
+                return tempOrder;
         }
 
-
+        private int tempOrder;
         @Override
         public boolean isLegal(List<Integer> selectedCards) {
                 Integer selectedCard1 = selectedCards.get(0);
                 Integer selectedCard2 = selectedCards.get(1);
-                return cardAt(selectedCard1).IsLegalBelow(cardAt(selectedCard2));
+                if (getCard(selectedCard1).IsLegalBelow(getCard(selectedCard2)))
+                        tempOrder = 12;
+                else if (getCard(selectedCard2).IsLegalBelow(getCard(selectedCard1)))
+                        tempOrder = 21;
+                return  getCard(selectedCard2).IsLegalBelow(getCard(selectedCard1))
+                        ||
+                        getCard(selectedCard1).IsLegalBelow(getCard(selectedCard2));
         }
 
         @Override
@@ -54,5 +70,34 @@ public class EasyBoard extends Board{
                 }
                 return -1;
         }
+        
+        /**
+         * stack manipulations
+         * @param card
+         * @param position 
+         */
+        public void initStack(){
+                stack = new Deck[10];
+                for (int i = 0; i < 10; i++)
+                        stack[i] = new Deck();
+        }
+        public void addCardinStack(Card card, int position){
+                stack[position].addCard(card);
+        }
+        public void removeCardinStack(int position){
+                stack[position].removeCard();
+        }
+        public Card getCard(int position){
+                return stack[position].lastCard();
+        }
+        public Card getCard(int posx, int posy){
+                return stack[posx].getCard(posy);
+        }
+        public int SizeofStack(int position){
+                return stack[position].size();
+        }
+        /*
+        
+        */
         
 }

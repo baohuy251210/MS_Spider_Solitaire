@@ -39,7 +39,7 @@ public class Card {
 
         public boolean IsLegalBelow(Card other){
                 return other.suit().equals(this.suit())
-                       && other.pointValue() > this.pointValue();
+                       && other.pointValue() == this.pointValue()+1;
         }
         
 	@Override

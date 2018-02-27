@@ -24,10 +24,37 @@ public class Deck {
 		size = cards.size();
 		shuffle();
 	}
+        
+        /**
+        * stack manipulations
+        */
+        public Deck(){
+                cards = new ArrayList<>();
+                size = cards.size();
+        }
+        
+        public void addCard(Card card){
+                cards.add(card);
+                size = cards.size();
+        }
+        public void removeCard(){
+                size--;
+                cards.remove(size);
+        }
+        public Card getCard(int posy){
+                return cards.get(posy);
+        }
+        //IsEmpty ()
+        //size()
+        //lastCard();
+        
+        
+        /**
+         * perhaps that's it for stacking 
+         */
 
-
-          public Card lastCard(){
-                return cards.get(size);
+        public Card lastCard(){
+                return cards.get(size-1);
         }
         
 	public boolean isEmpty() {
