@@ -78,8 +78,9 @@ public class EasyUI1 extends JFrame implements ActionListener {
                                 Btns[i][j].setIcon(new ImageIcon(getClass().getResource("/cards/back2.jpg"))); // NOI18N
                                 Btns[i][j].setOpaque(false);
                                 Btns[i][j].setVisible(false);
-                                if (j < 5)
+                                if (j < 5) {
                                         Btns[i][j].setVisible(true);
+                                }
                                 MainPanel.add(Btns[i][j], new org.netbeans.lib.awtextra.AbsoluteConstraints(y, x, 70, 100));
                                 position[i][j] = new Point(x, y);
                                 x -= 20;
@@ -96,8 +97,9 @@ public class EasyUI1 extends JFrame implements ActionListener {
                                 Btns[i][j].setIcon(new ImageIcon(getClass().getResource("/cards/back2.jpg"))); // NOI18N
                                 Btns[i][j].setOpaque(false);
                                 Btns[i][j].setVisible(false);
-                                if (j < 4)
+                                if (j < 4) {
                                         Btns[i][j].setVisible(true);
+                                }
 
                                 MainPanel.add(Btns[i][j], new org.netbeans.lib.awtextra.AbsoluteConstraints(y, x, 70, 100));
                                 position[i][j] = new Point(x, y);
@@ -163,13 +165,13 @@ public class EasyUI1 extends JFrame implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
                 Object evt = e.getSource();
-                if (evt.equals(BtnDeal))
+                if (evt.equals(BtnDeal)) {
                         BtnDealEvent();
-                else if (evt.equals(BtnPlace))
+                } else if (evt.equals(BtnPlace)) {
                         BtnPlaceEvent();
-                else if (evt.equals(BtnRestart))
+                } else if (evt.equals(BtnRestart)) {
                         BtnRestartEvent();
-                else {
+                } else {
                         CardsHandling(evt);
                 }
         }
@@ -181,12 +183,13 @@ public class EasyUI1 extends JFrame implements ActionListener {
                 boolean needTwo = false;
                 int posi = -1, posj = -1;
                 /*
-                last card Only handling
+                 last card Only handling
                  */
                 for (int i = 0; i < Btns.length; i++) {
                         int j = last[i];
-                        if (j < 0)
+                        if (j < 0) {
                                 continue; //escape the error when 1 stack is empty
+                        }
                         if (evt.equals(Btns[i][j])) {
                                 posi = i;
                                 posj = j;
@@ -195,24 +198,26 @@ public class EasyUI1 extends JFrame implements ActionListener {
                 }
                 if (posi != -1 && posj != -1) {
                         Card c = board.getCard(posi);
-                        if (IsOverSelections() && !isselected[posi][posj])
+                        if (IsOverSelections() && !isselected[posi][posj]) {
                                 return;
+                        }
                         isselected[posi][posj] = !isselected[posi][posj];
                         selections[posi] = !selections[posi];
                         Btns[posi][posj].setIcon(new ImageIcon(getClass().getResource(imageFileName(c, isselected[posi][posj]))));
-                        
-                }
-                else 
+
+                } else {
                         needTwo = true;
-                
+                }
+
                 /**
-                 * multiple cards handling (hard/complicated as hell)
+                 * multiple cards handling
                  */
                 if (needTwo) {
-                        posi = -1; posj = -1; //reinitialize
-                        for (int i = 0; i < Btns.length && posi == -1; i++){
-                                for (int j = 0; j <= last[i]; j++){
-                                        if (evt.equals(Btns[i][j])){
+                        posi = -1;
+                        posj = -1; //reinitialize
+                        for (int i = 0; i < Btns.length && posi == -1; i++) {
+                                for (int j = 0; j <= last[i]; j++) {
+                                        if (evt.equals(Btns[i][j])) {
                                                 posi = i;
                                                 posj = j;
                                                 break;
@@ -222,11 +227,28 @@ public class EasyUI1 extends JFrame implements ActionListener {
                         //check if from posj to last is valid
                         boolean isValid = true;
                         int SSize = board.SizeofStack(posi);
-                        
+                        for (int j = last[posi]; j > posj; j--) {
+                                Card card1 = board.getCard(posi, SSize - 1);
+                                Card card2 = board.getCard(posi, SSize - 2);
+                                if (!card1.IsLegalBelow(card2)) {
+                                        isValid = false;
+                                }
+                                SSize--;
+                        }
                         //validation ends
-                        
-                        
-                                
+                        //select cards
+                        if (isValid) {
+                                selections[posi] = !selections[posi];
+                                SSize = board.SizeofStack(posi);
+                                int tempj = -1;
+                                for (int j = last[posi]; j >= posj; j--) {
+                                        Card card = board.getCard(posi, SSize - 1);
+                                        Btns[posi][j].setIcon(new ImageIcon(getClass().getResource(imageFileName(card, selections[posi]))));
+                                        SSize--;
+                                        tempj = j;
+                                }
+                                isselected[posi][tempj] = !isselected[posi][tempj];
+                        }
 
                 }
                 //end multiple cards (oh it killed me)
@@ -234,9 +256,11 @@ public class EasyUI1 extends JFrame implements ActionListener {
 
         private boolean IsOverSelections2() {
                 int count = 0;
-                for (int i = 0; i < Btns.length; i++)
-                        if (selections[i])
+                for (int i = 0; i < Btns.length; i++) {
+                        if (selections[i]) {
                                 count++;
+                        }
+                }
                 return (count >= 2);
         }
 
@@ -244,8 +268,9 @@ public class EasyUI1 extends JFrame implements ActionListener {
                 int count = 0;
                 for (int i = 0; i < Btns.length; i++) {
                         int j = last[i];
-                        if (isselected[i][j])
+                        if (isselected[i][j]) {
                                 count++;
+                        }
                 }
                 return (count >= 2);
         }
@@ -258,9 +283,9 @@ public class EasyUI1 extends JFrame implements ActionListener {
                 boolean isValid = false;
                 List<Integer> selectedCards = new ArrayList<>();
                 int c1 = -1, c2 = -1;
-                int y1, y2;
-                for (int i = 0; i < Btns.length; i++){
-                        for (int j = 0; j <= last[i]; j++){
+                int y1 = -1, y2 = -1;
+                for (int i = 0; i < Btns.length; i++) {
+                        for (int j = 0; j <= last[i]; j++) {
                                 if (isselected[i][j]) {
                                         if (c1 == -1) {
                                                 c1 = i;
@@ -271,18 +296,22 @@ public class EasyUI1 extends JFrame implements ActionListener {
                                         }
                                 }
                         }
-                        }
-                
-                Card card1 = board.getCard(c1);
-                Card card2 = board.getCard(c2);
-                selectedCards.add(c1);selectedCards.add(c2);
+                }
+
+                Card card1 = board.getCard(c1, y1 - 1 - (last[c1] - board.SizeofStack(c1)));
+                System.out.println(card1 + " " + y1);
+                Card card2 = board.getCard(c2, y2 - 1 - (last[c2] - board.SizeofStack(c2)));
+                System.out.println(card2 + " " + y2);
+                selectedCards.add(c1);
+                selectedCards.add(c2);
                 if (board.isLegal(selectedCards)) {
                         isValid = true;
                         int order = board.getOrder();
-                        if (order == 12)
+                        if (order == 12) {
                                 PlaceProcess(c1, c2, card1, card2);
-                        else if (order == 21)
+                        } else if (order == 21) {
                                 PlaceProcess(c2, c1, card2, card1);
+                        }
                 }
                 //init
                 if (isValid) {
