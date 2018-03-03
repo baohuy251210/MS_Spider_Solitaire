@@ -136,7 +136,6 @@ public class EasyUI1 extends JFrame implements ActionListener {
         void DealPressed() {
                 if (deck.size() < 10)
                         return;
-                System.out.println("run");
                 for (int i = 0; i < 10; i++) {
                         Card newCard = deck.deal();
                         last[i]++;
@@ -185,7 +184,8 @@ public class EasyUI1 extends JFrame implements ActionListener {
                         rowSelected2.clear();
                         MinRow2 = -1;
                         FlipCard(col, row, lastCard, false);
-                } else if (isEmptylist1) {
+                } else
+                if (isEmptylist1) {
                         selected1.add(lastCard);
                         colSelected1 = col;
                         rowSelected1.add(row);
@@ -204,6 +204,7 @@ public class EasyUI1 extends JFrame implements ActionListener {
                 boolean isEmptylist1 = selected1.isEmpty();
                 boolean isEmptylist2 = selected2.isEmpty();
                 List<Card> tempSelected = AchieveCol(col, row);
+                if (tempSelected.isEmpty()) return;
                 if (isEmptylist1 || (MinRow1 != -1 && MinRow1 > row)) {
                         selected1 = tempSelected;
                         colSelected1 = col;
@@ -216,19 +217,31 @@ public class EasyUI1 extends JFrame implements ActionListener {
                         rowSelected2.add(row);
                         MinRow2 = row;
                         FlipCard(col, row, selected2, true);
-                }
+                }////////////////////
 
         }
 
         List<Card> AchieveCol(int col, int row) {
                 List<Card> result = new ArrayList<>();
+                Card downCard = new Card("ded", "DE", 1);
+                boolean isValid = true;
                 for (int j = row + 1; j <= last[col]; j++) {
-                        Card downCard = CardinStack(col, j);
+                        downCard = CardinStack(col, j);
                         Card upCard = CardinStack(col, j - 1);
                         if (downCard.IsLegalBelow(upCard))
                                 result.add(upCard);
+                        else {
+                                isValid = false;
+                                break;
+                        }
                 }
-                return result;
+                if (isValid) {
+                        result.add(downCard);
+                        return result;
+                }
+                else 
+                        return new ArrayList<>();
+                
         }
 
         /**
@@ -252,7 +265,7 @@ public class EasyUI1 extends JFrame implements ActionListener {
                 Card resultCard = newStack.peek();
                 int tempRow = last[col];
                 while (tempRow >= row) {
-                        resultCard = newStack.pop();
+                        resultCard = newStack.get(tempRow);
                         tempRow--;
                 }
                 return resultCard;
