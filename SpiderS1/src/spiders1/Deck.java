@@ -77,6 +77,7 @@ public class Deck {
 		size = cards.size();
 	}
 
+        //get a Card out of Deck ==> remove
 	public Card deal() {
 		if (isEmpty()) {
 			return null;

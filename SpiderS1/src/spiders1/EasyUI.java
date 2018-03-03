@@ -75,6 +75,7 @@ public class EasyUI extends javax.swing.JFrame {
                 S0Card4 = new javax.swing.JButton();
                 S0Card5 = new javax.swing.JButton();
                 BtnDeal = new javax.swing.JButton();
+                LblRest = new javax.swing.JLabel();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -290,6 +291,10 @@ public class EasyUI extends javax.swing.JFrame {
                 BtnDeal.setText("Deal Cards");
                 MainPanel.add(BtnDeal, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 540, 150, 60));
 
+                LblRest.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+                LblRest.setText("Deck: 50 card(s) left");
+                MainPanel.add(LblRest, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 510, 170, 30));
+
                 getContentPane().add(MainPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1110, 610));
 
                 pack();
@@ -337,6 +342,7 @@ public class EasyUI extends javax.swing.JFrame {
         private javax.swing.JButton BtnDeal;
         private javax.swing.JButton BtnPlace;
         private javax.swing.JButton BtnRestart;
+        private javax.swing.JLabel LblRest;
         private javax.swing.JPanel MainPanel;
         private javax.swing.JButton S0Card1;
         private javax.swing.JButton S0Card2;
