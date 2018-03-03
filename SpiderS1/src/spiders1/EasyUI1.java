@@ -2,6 +2,7 @@ package spiders1;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -17,12 +18,13 @@ public class EasyUI1 extends JFrame implements ActionListener {
          * Creates new form EasyUI
          */
         JButton[][] Btns;
-        int[] last;
+        List<Stack> arr;
 
         private boolean[] selections;
 
         public EasyUI1() {
                 initComponents();
+                initBtns();
         }
         private void initComponents() {
 
@@ -36,43 +38,6 @@ public class EasyUI1 extends JFrame implements ActionListener {
                 MainPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
                 MainPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-                last = new int[10];
-                Btns = new JButton[10][16];
-                int y = 10;
-                for (int i = 0; i < 4; i++) {
-                        int x = 15 * 20;
-                        last[i] = 4;
-                        for (int j = 15; j >= 0; j--) {
-                                Btns[i][j] = new JButton();
-                                Btns[i][j].setIcon(new ImageIcon(getClass().getResource("/cards/back2.jpg"))); // NOI18N
-                                Btns[i][j].setOpaque(false);
-                                Btns[i][j].setVisible(false);
-                                if (j < 5)
-                                        Btns[i][j].setVisible(true);
-                                MainPanel.add(Btns[i][j], new org.netbeans.lib.awtextra.AbsoluteConstraints(y, x, 70, 100));
-                                x -= 20;
-                                //add actionListener
-                                Btns[i][j].addActionListener(this);
-                        }
-                        y += 100;
-                }
-                for (int i = 4; i < 10; i++) {
-                        int x = 15 * 20;
-                        last[i] = 3;
-                        for (int j = 15; j >= 0; j--) {
-                                Btns[i][j] = new JButton();
-                                Btns[i][j].setIcon(new ImageIcon(getClass().getResource("/cards/back2.jpg"))); // NOI18N
-                                Btns[i][j].setOpaque(false);
-                                Btns[i][j].setVisible(false);
-                                if (j < 4)
-                                        Btns[i][j].setVisible(true);
-
-                                MainPanel.add(Btns[i][j], new org.netbeans.lib.awtextra.AbsoluteConstraints(y, x, 70, 100));
-                                x -= 20;
-                                Btns[i][j].addActionListener(this);
-                        }
-                        y += 100;
-                }
 
                 BtnRestart.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
                 BtnRestart.setText("Restart");
@@ -92,7 +57,42 @@ public class EasyUI1 extends JFrame implements ActionListener {
                 getContentPane().add(MainPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1110, 610));
 
                 pack();
-        }// </editor-fold>                        
+        }                   
+        
+        void initBtns(){
+                 Btns = new JButton[10][16];
+                int y = 10;
+                for (int i = 0; i < 4; i++) {
+                        int x = 15 * 20;
+                        for (int j = 15; j >= 0; j--) {
+                                Btns[i][j] = new JButton();
+                                Btns[i][j].setIcon(new ImageIcon(getClass().getResource("/cards/back2.jpg"))); // NOI18N
+                                Btns[i][j].setOpaque(false);
+                                Btns[i][j].setVisible(false);
+                                if (j < 5)
+                                        Btns[i][j].setVisible(true);
+                                MainPanel.add(Btns[i][j], new org.netbeans.lib.awtextra.AbsoluteConstraints(y, x, 70, 100));
+                                x -= 20;
+                                Btns[i][j].addActionListener(this);
+                        }
+                        y += 100;
+                }
+                for (int i = 4; i < 10; i++) {
+                        int x = 15 * 20;
+                        for (int j = 15; j >= 0; j--) {
+                                Btns[i][j] = new JButton();
+                                Btns[i][j].setIcon(new ImageIcon(getClass().getResource("/cards/back2.jpg"))); // NOI18N
+                                Btns[i][j].setOpaque(false);
+                                Btns[i][j].setVisible(false);
+                                if (j < 4)
+                                        Btns[i][j].setVisible(true);
+                                MainPanel.add(Btns[i][j], new org.netbeans.lib.awtextra.AbsoluteConstraints(y, x, 70, 100));
+                                x -= 20;
+                                Btns[i][j].addActionListener(this);
+                        }
+                        y += 100;
+                }
+        }
 
         private String imageFileName(Card c, boolean isSelected) {
                 String str = "/cards/";
