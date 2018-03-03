@@ -119,8 +119,22 @@ public class EasyUI1 extends JFrame implements ActionListener {
                 }
         }
 
+        void DealPressed() {
+                if (deck.size() < 10) 
+                        return;
+                System.out.println("run");
+                for (int i = 0; i < 10; i++){
+                        Card newCard = deck.deal();
+                        last[i]++;
+                        Stack<Card> newStack = new Stack<>();
+                        newStack = arr.get(i);
+                        newStack.push(newCard);
+                        arr.set(i, newStack);
+                        FlipCard(i, last[i], newCard, false);
+                }
+                LblRest.setText("Deck: " + deck.size() + " card(s) left");
+        }
         
-
         private JLabel LblRest;
         private JButton BtnDeal;
         private JButton BtnPlace;
@@ -137,15 +151,15 @@ public class EasyUI1 extends JFrame implements ActionListener {
 
         }
 
-        void DealPressed() {
-
-        }
+        
 
         void RestartPressed() {
-                initComponents();
-                initDeck();
-                initBoardStack();
-                initFirstLine();
+                this.dispose();
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                                new EasyUI1().setVisible(true);
+                        }
+                });
         }
         //Done Methods
 
