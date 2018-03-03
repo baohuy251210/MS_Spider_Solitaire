@@ -24,8 +24,8 @@ public class EasyUI1 extends JFrame implements ActionListener {
 
         public EasyUI1() {
                 initComponents();
-                initBtns();
         }
+
         private void initComponents() {
 
                 MainPanel = new javax.swing.JPanel();
@@ -37,8 +37,9 @@ public class EasyUI1 extends JFrame implements ActionListener {
                 getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
                 MainPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
                 MainPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-
+                
+                initBtns();
+                
                 BtnRestart.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
                 BtnRestart.setText("Restart");
                 MainPanel.add(BtnRestart, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 540, 100, 60));
@@ -57,10 +58,10 @@ public class EasyUI1 extends JFrame implements ActionListener {
                 getContentPane().add(MainPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1110, 610));
 
                 pack();
-        }                   
-        
-        void initBtns(){
-                 Btns = new JButton[10][16];
+        }
+
+        void initBtns() {
+                Btns = new JButton[10][16];
                 int y = 10;
                 for (int i = 0; i < 4; i++) {
                         int x = 15 * 20;
@@ -129,6 +130,5 @@ public class EasyUI1 extends JFrame implements ActionListener {
         public void actionPerformed(ActionEvent e) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-
 
 }
