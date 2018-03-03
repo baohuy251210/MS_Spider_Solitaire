@@ -27,23 +27,25 @@ public class EasyUI1 extends JFrame implements ActionListener {
         Deck deck;
         private boolean[] selections;
         List<Card> cards;
-        
-        
-        
+
         public EasyUI1() {
                 initSelections();
                 initComponents();
                 initDeck();
                 initBoardStack();
                 initFirstLine();
+               
         }
-        void initSelections(){
+
+        void initSelections() {
                 selected1 = new ArrayList<>();
                 selected2 = new ArrayList<>();
-                colSelected1= new ArrayList<>();
-                colSelected2= new ArrayList<>();
-                rowSelected1= new ArrayList<>();
-                rowSelected2= new ArrayList<>();
+                colSelected1 = -1;
+                colSelected2 = -1;
+                rowSelected1 = new ArrayList<>();
+                rowSelected2 = new ArrayList<>();
+                MinRow1 = -1;
+                MinRow2 = -1;
         }
 
         void initDeck() {
@@ -132,10 +134,10 @@ public class EasyUI1 extends JFrame implements ActionListener {
         }
 
         void DealPressed() {
-                if (deck.size() < 10) 
+                if (deck.size() < 10)
                         return;
                 System.out.println("run");
-                for (int i = 0; i < 10; i++){
+                for (int i = 0; i < 10; i++) {
                         Card newCard = deck.deal();
                         last[i]++;
                         Stack<Card> newStack = new Stack<>();
@@ -146,54 +148,115 @@ public class EasyUI1 extends JFrame implements ActionListener {
                 }
                 LblRest.setText("Deck: " + deck.size() + " card(s) left");
         }
-        
-        
+
         /**
-         * @param Pressed : [0] = true as always, [1] = column, [2] = position in that column
-         * ==> [1][2] is the position
+         * @param Pressed : [0] = true as always, [1] = column, [2] = position
+         * in that column ==> [1][2] is the position
          */
-        void CardPressed(int [] Pressed){
+        void CardPressed(int[] Pressed) {
                 int col = Pressed[1];
                 int row = Pressed[2];
                 if (row == last[col])
                         lastCardPressed(col, row);
-                else 
+                else
                         moreCardPressed(col, row);
         }
-        
+
         List<Card> selected1;
         List<Card> selected2;
-        List<Integer> colSelected1;
         List<Integer> rowSelected1;
-        List<Integer> colSelected2;
         List<Integer> rowSelected2;
-        
-        void lastCardPressed(int col, int row){
+        int colSelected1, colSelected2;
+        int MinRow1, MinRow2;
+
+        void lastCardPressed(int col, int row) {
                 boolean isEmptylist1 = selected1.isEmpty();
                 boolean isEmptylist2 = selected2.isEmpty();
-                if (isEmptylist1){
-                        Card lastCard = arr.get(col).peek();
+                Card lastCard = arr.get(col).peek();
+                if (colSelected1 == col){
+                        selected1.clear();
+                        colSelected1 = -1;
+                        rowSelected1.clear();
+                        MinRow1 = -1;
+                        FlipCard(col, row, lastCard, false);
+                } else if (colSelected2 == col){
+                        selected2.clear();
+                        colSelected2 = -1;
+                        rowSelected2.clear();
+                        MinRow2 = -1;
+                        FlipCard(col, row, lastCard, false);
+                } else if (isEmptylist1) {
                         selected1.add(lastCard);
-                        colSelected1.add(col);
+                        colSelected1 = col;
+                        rowSelected1.add(row);
+                        MinRow1 = row;
+                        FlipCard(col, row, lastCard, true);
+                } else if (isEmptylist2) {
+                        selected2.add(lastCard);
+                        colSelected2 = col;
+                        rowSelected2.add(row);
+                        MinRow2 = row;
+                        FlipCard(col, row, lastCard, true);
+                } 
+        }
+
+        void moreCardPressed(int col, int row) {
+                boolean isEmptylist1 = selected1.isEmpty();
+                boolean isEmptylist2 = selected2.isEmpty();
+                List<Card> tempSelected = AchieveCol(col, row);
+                if (isEmptylist1 || (MinRow1 != -1 && MinRow1 > row)) {
+                        selected1 = tempSelected;
+                        colSelected1 = col;
+                        rowSelected1.add(row);
+                        MinRow1 = row;
+                        FlipCard(col, row, selected1, true);
+                } else if (isEmptylist2 || (MinRow2 != -1 && MinRow2 > row)) {
+                        selected2 = tempSelected;
+                        colSelected2 = col;
+                        rowSelected2.add(row);
+                        MinRow2 = row;
+                        FlipCard(col, row, selected2, true);
                 }
+
         }
-        void moreCardPressed(int col, int row){
-                
+
+        List<Card> AchieveCol(int col, int row) {
+                List<Card> result = new ArrayList<>();
+                for (int j = row + 1; j <= last[col]; j++) {
+                        Card downCard = CardinStack(col, j);
+                        Card upCard = CardinStack(col, j - 1);
+                        if (downCard.IsLegalBelow(upCard))
+                                result.add(upCard);
+                }
+                return result;
         }
-        
-        
+
         /**
-         * @return {boolean b, int i, int j} b is 1 if a visible card is pressed and [i,j] is the position
-         * b is 0 if it is not a visible card.
+         * @return {boolean b, int i, int j} b is 1 if a visible card is pressed
+         * and [i,j] is the position b is 0 if it is not a visible card.
          */
-        int[] VisibleCardPressed(Object obj){
+        int[] VisibleCardPressed(Object obj) {
                 for (int i = 0; i < 10; i++)
-                        for (int j = 0; j < last[i]; j++)
-                                if (obj.equals(Btns[i][j]))
-                                        return new int[] {1, i, j};
+                        for (int j = 0; j <= last[i]; j++){
+                                String BtnImageName = Btns[i][j].getIcon().toString();
+                                BtnImageName = BtnImageName.substring(BtnImageName.length() - 9);
+                                if (obj.equals(Btns[i][j]) && !BtnImageName.equals("back2.jpg"))
+                                        return new int[]{1, i, j};
+                         
+                        }
                 return new int[]{0, 0, 0};
         }
-        
+
+        Card CardinStack(int col, int row) {
+                Stack<Card> newStack = arr.get(col);
+                Card resultCard = newStack.peek();
+                int tempRow = last[col];
+                while (tempRow >= row) {
+                        resultCard = newStack.pop();
+                        tempRow--;
+                }
+                return resultCard;
+        }
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -203,11 +266,10 @@ public class EasyUI1 extends JFrame implements ActionListener {
                         RestartPressed();
                 else if (obj.equals(BtnDeal))
                         DealPressed();
-                else if (Pressed[0] == 1){ // {b, x, y} b = 1 ==> a visible card is pressed
+                else if (Pressed[0] == 1) { // {b, x, y} b = 1 ==> a visible card is pressed
                         CardPressed(Pressed);
-                }        
+                }
         }
-        
 
         void RestartPressed() {
                 this.dispose();
@@ -217,21 +279,31 @@ public class EasyUI1 extends JFrame implements ActionListener {
                         }
                 });
         }
-       
+
         private JLabel LblRest;
         private JButton BtnDeal;
         private JButton BtnPlace;
         private JButton BtnRestart;
         private JPanel MainPanel;
-        
-        
-        //Done Methods
 
+        //Done Methods
         void FlipCard(int col, int lasti, Card card, boolean isSelected) {
                 Btns[col][lasti].setIcon(new ImageIcon(getClass().getResource(imageFileName(card, isSelected))));
                 Btns[col][lasti].setOpaque(false);
                 Btns[col][lasti].setVisible(true);
         }
+
+        void FlipCard(int col, int firstrow, List<Card> cards, boolean isSelected) {
+                int count = 0;
+                for (int j = firstrow; j <= last[col]; j++) {
+                        Card card = cards.get(count);
+                        count++;
+                        Btns[col][j].setIcon(new ImageIcon(getClass().getResource(imageFileName(card, isSelected))));
+                        Btns[col][j].setOpaque(false);
+                        Btns[col][j].setVisible(true);
+                }
+        }
+
         void initBtns() {
                 Btns = new JButton[10][16];
                 int y = 10;
@@ -266,7 +338,7 @@ public class EasyUI1 extends JFrame implements ActionListener {
         private String imageFileName(Card c, boolean isSelected) {
                 String str = "/cards/";
                 if (c == null) {
-                        return "cards/back1.GIF";
+                        return "/cards/back1.GIF";
                 }
                 str += c.rank() + c.suit();
                 if (isSelected) {
