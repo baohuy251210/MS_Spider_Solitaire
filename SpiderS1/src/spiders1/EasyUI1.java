@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -26,12 +27,23 @@ public class EasyUI1 extends JFrame implements ActionListener {
         Deck deck;
         private boolean[] selections;
         List<Card> cards;
-
+        
+        
+        
         public EasyUI1() {
+                initSelections();
                 initComponents();
                 initDeck();
                 initBoardStack();
                 initFirstLine();
+        }
+        void initSelections(){
+                selected1 = new ArrayList<>();
+                selected2 = new ArrayList<>();
+                colSelected1= new ArrayList<>();
+                colSelected2= new ArrayList<>();
+                rowSelected1= new ArrayList<>();
+                rowSelected2= new ArrayList<>();
         }
 
         void initDeck() {
@@ -135,22 +147,66 @@ public class EasyUI1 extends JFrame implements ActionListener {
                 LblRest.setText("Deck: " + deck.size() + " card(s) left");
         }
         
-        private JLabel LblRest;
-        private JButton BtnDeal;
-        private JButton BtnPlace;
-        private JButton BtnRestart;
-        private JPanel MainPanel;
+        
+        /**
+         * @param Pressed : [0] = true as always, [1] = column, [2] = position in that column
+         * ==> [1][2] is the position
+         */
+        void CardPressed(int [] Pressed){
+                int col = Pressed[1];
+                int row = Pressed[2];
+                if (row == last[col])
+                        lastCardPressed(col, row);
+                else 
+                        moreCardPressed(col, row);
+        }
+        
+        List<Card> selected1;
+        List<Card> selected2;
+        List<Integer> colSelected1;
+        List<Integer> rowSelected1;
+        List<Integer> colSelected2;
+        List<Integer> rowSelected2;
+        
+        void lastCardPressed(int col, int row){
+                boolean isEmptylist1 = selected1.isEmpty();
+                boolean isEmptylist2 = selected2.isEmpty();
+                if (isEmptylist1){
+                        Card lastCard = arr.get(col).peek();
+                        selected1.add(lastCard);
+                        colSelected1.add(col);
+                }
+        }
+        void moreCardPressed(int col, int row){
+                
+        }
+        
+        
+        /**
+         * @return {boolean b, int i, int j} b is 1 if a visible card is pressed and [i,j] is the position
+         * b is 0 if it is not a visible card.
+         */
+        int[] VisibleCardPressed(Object obj){
+                for (int i = 0; i < 10; i++)
+                        for (int j = 0; j < last[i]; j++)
+                                if (obj.equals(Btns[i][j]))
+                                        return new int[] {1, i, j};
+                return new int[]{0, 0, 0};
+        }
+        
 
         @Override
         public void actionPerformed(ActionEvent e) {
                 Object obj = e.getSource();
+                int[] Pressed = VisibleCardPressed(obj);
                 if (obj.equals(BtnRestart))
                         RestartPressed();
                 else if (obj.equals(BtnDeal))
                         DealPressed();
-
+                else if (Pressed[0] == 1){ // {b, x, y} b = 1 ==> a visible card is pressed
+                        CardPressed(Pressed);
+                }        
         }
-
         
 
         void RestartPressed() {
@@ -161,6 +217,14 @@ public class EasyUI1 extends JFrame implements ActionListener {
                         }
                 });
         }
+       
+        private JLabel LblRest;
+        private JButton BtnDeal;
+        private JButton BtnPlace;
+        private JButton BtnRestart;
+        private JPanel MainPanel;
+        
+        
         //Done Methods
 
         void FlipCard(int col, int lasti, Card card, boolean isSelected) {
